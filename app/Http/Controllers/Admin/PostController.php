@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class PostController extends Controller
@@ -54,13 +55,10 @@ class PostController extends Controller
             'published_at'=> 'nullable|date',
         ]);
 
-        // Handle upload gambar — simpan sebagai base64 di DB (Railway-safe)
+        // Handle upload gambar — simpan file ke storage/app/public
         $imageData = null;
         if ($request->hasFile('image')) {
-            $file     = $request->file('image');
-            $mime     = $file->getMimeType();
-            $base64   = base64_encode(file_get_contents($file->getRealPath()));
-            $imageData = "data:{$mime};base64,{$base64}";
+            $imageData = $request->file('image')->store('posts', 'public');
         }
 
         // Generate slug unik
@@ -111,13 +109,13 @@ class PostController extends Controller
             'published_at'=> 'nullable|date',
         ]);
 
-        // Handle upload gambar baru — simpan sebagai base64 di DB (Railway-safe)
+        // Handle upload gambar baru
         $imageData = $post->image; // tetap pakai gambar lama jika tidak ada upload baru
         if ($request->hasFile('image')) {
-            $file      = $request->file('image');
-            $mime      = $file->getMimeType();
-            $base64    = base64_encode(file_get_contents($file->getRealPath()));
-            $imageData = "data:{$mime};base64,{$base64}";
+            if ($post->image && !str_starts_with($post->image, 'data:')) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $imageData = $request->file('image')->store('posts', 'public');
         }
 
         // Update slug hanya jika judul berubah
@@ -148,7 +146,9 @@ class PostController extends Controller
     // ── Hapus Berita ──────────────────────────────
     public function destroy(Post $post)
     {
-        // Gambar tersimpan sebagai base64 di DB, cukup hapus record-nya
+        if ($post->image && !str_starts_with($post->image, 'data:')) {
+            Storage::disk('public')->delete($post->image);
+        }
         $post->delete();
 
         return redirect()

@@ -53,11 +53,12 @@ class Post extends Model
         if (!$this->image) {
             return null;
         }
-        // Sudah base64 data URI
+        // Sudah base64 data URI (data lama yang pernah disimpan sebagai base64)
         if (str_starts_with($this->image, 'data:')) {
             return $this->image;
         }
-        // Path lama — kembalikan storage URL (mungkin masih bekerja di sesi yang sama)
-        return asset('storage/' . $this->image);
+        // Path file (posts/xxx.jpg) — arahkan ke route /storage/{path}
+        // Route ini serve langsung dari disk tanpa butuh symlink
+        return url('/storage/' . $this->image);
     }
 }
