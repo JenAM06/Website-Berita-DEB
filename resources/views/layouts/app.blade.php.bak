@@ -12,6 +12,31 @@
 </head>
 <body class="bg-white text-gray-800 font-sans antialiased">
 
+  {{-- ── TOP BAR ── --}}
+  <div class="bg-primary-700 text-white text-xs py-2 hidden md:block">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <span class="text-primary-100">
+        Program Desa Energi Berdikari — Kawasan Sawah Betapus, Samarinda
+      </span>
+      <div class="flex items-center gap-4">
+        <a href="{{ route('home') }}" 
+           class="text-primary-100 hover:text-white transition-colors">
+          Beranda
+        </a>
+        <span class="text-primary-500">|</span>
+        <a href="{{ route('about') }}"
+           class="text-primary-100 hover:text-white transition-colors">
+          Tentang Program
+        </a>
+        <span class="text-primary-500">|</span>
+        <a href="{{ route('login') }}"
+           class="text-primary-100 hover:text-white transition-colors">
+          Admin
+        </a>
+      </div>
+    </div>
+  </div>
+
   {{-- ── NAVBAR UTAMA ── --}}
   <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -103,11 +128,6 @@
                 : 'border-transparent text-gray-600 hover:text-primary-700 
                    hover:border-primary-300' }}">
             TENTANG
-          </a>
-          <a href="{{ route('login') }}"
-             class="ml-3 px-4 py-2 text-sm font-semibold rounded-lg transition-all
-             bg-primary-700 text-white hover:bg-primary-800">
-            Admin
           </a>
         </div>
 

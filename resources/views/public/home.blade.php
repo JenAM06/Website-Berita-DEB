@@ -16,7 +16,7 @@
           {{-- Gambar --}}
           @if($featuredPost->image)
             <div class="overflow-hidden">
-              <img src="{{ asset('storage/' . $featuredPost->image) }}"
+              <img src="{{ $featuredPost->image }}"
                    alt="{{ $featuredPost->title }}"
                    class="w-full h-80 object-cover group-hover:scale-105 
                           transition-transform duration-500"/>
@@ -75,7 +75,7 @@
                   last:border-0">
           {{-- Gambar Kecil --}}
           @if($post->image)
-            <img src="{{ asset('storage/' . $post->image) }}"
+            <img src="{{ $post->image }}"
                  alt="{{ $post->title }}"
                  class="w-20 h-16 object-cover shrink-0"/>
           @else

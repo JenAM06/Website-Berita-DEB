@@ -8,7 +8,6 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class PostController extends Controller
@@ -55,11 +54,13 @@ class PostController extends Controller
             'published_at'=> 'nullable|date',
         ]);
 
-        // Handle upload gambar
-        $imagePath = null;
+        // Handle upload gambar — simpan sebagai base64 di DB (Railway-safe)
+        $imageData = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')
-                ->store('posts', 'public');
+            $file     = $request->file('image');
+            $mime     = $file->getMimeType();
+            $base64   = base64_encode(file_get_contents($file->getRealPath()));
+            $imageData = "data:{$mime};base64,{$base64}";
         }
 
         // Generate slug unik
@@ -72,7 +73,7 @@ class PostController extends Controller
             'slug'         => $slug,
             'excerpt'      => $validated['excerpt'],
             'content'      => $validated['content'],
-            'image'        => $imagePath,
+            'image'        => $imageData,
             'status'       => $validated['status'],
             'published_at' => $validated['published_at']
                 ?? ($validated['status'] === 'published' ? Carbon::now() : null),
@@ -110,15 +111,13 @@ class PostController extends Controller
             'published_at'=> 'nullable|date',
         ]);
 
-        // Handle upload gambar baru
-        $imagePath = $post->image; // tetap pakai gambar lama
+        // Handle upload gambar baru — simpan sebagai base64 di DB (Railway-safe)
+        $imageData = $post->image; // tetap pakai gambar lama jika tidak ada upload baru
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $imagePath = $request->file('image')
-                ->store('posts', 'public');
+            $file      = $request->file('image');
+            $mime      = $file->getMimeType();
+            $base64    = base64_encode(file_get_contents($file->getRealPath()));
+            $imageData = "data:{$mime};base64,{$base64}";
         }
 
         // Update slug hanya jika judul berubah
@@ -133,7 +132,7 @@ class PostController extends Controller
             'slug'         => $slug,
             'excerpt'      => $validated['excerpt'],
             'content'      => $validated['content'],
-            'image'        => $imagePath,
+            'image'        => $imageData,
             'status'       => $validated['status'],
             'published_at' => $validated['published_at']
                 ?? ($validated['status'] === 'published' && !$post->published_at
@@ -149,11 +148,7 @@ class PostController extends Controller
     // ── Hapus Berita ──────────────────────────────
     public function destroy(Post $post)
     {
-        // Hapus gambar dari storage
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-
+        // Gambar tersimpan sebagai base64 di DB, cukup hapus record-nya
         $post->delete();
 
         return redirect()

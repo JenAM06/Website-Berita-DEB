@@ -17,8 +17,11 @@ cmds = [
 cmds = [
   "php artisan config:cache",
   "php artisan route:cache",
-  "php artisan view:cache"
+  "php artisan view:cache",
+  # Buat symlink storage di fase build (lebih stabil dari start)
+  "php artisan storage:link || true"
 ]
 
 [start]
-cmd = "php artisan migrate --force && php artisan db:seed --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT"
+# storage:link dijalankan lagi saat start sebagai fallback jika Railway restart container
+cmd = "php artisan migrate --force && php artisan storage:link --force || true && php artisan serve --host=0.0.0.0 --port=$PORT"

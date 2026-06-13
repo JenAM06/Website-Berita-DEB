@@ -2,7 +2,7 @@
 // config/filesystems.php
 
 return [
-    'default' => env('FILESYSTEM_DISK', 'public'),
+    'default' => env('FILESYSTEM_DISK', 'local'),
 
     'disks' => [
         'local' => [
@@ -12,6 +12,9 @@ return [
             'throw'  => false,
         ],
 
+        // Disk 'public' — file disimpan di storage/app/public
+        // URL-nya diarahkan ke route /storage/{path} bukan symlink,
+        // sehingga aman di Railway yang tidak persist symlink.
         'public' => [
             'driver'     => 'local',
             'root'       => storage_path('app/public'),

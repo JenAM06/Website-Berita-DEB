@@ -3,9 +3,36 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicController;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
+
+// ─────────────────────────────────────────────
+// SERVE STORAGE FILES (bypass symlink — Railway safe)
+// ─────────────────────────────────────────────
+Route::get('/storage/{path}', function (string $path) {
+    // Cegah path traversal
+    $path = ltrim($path, '/');
+    if (str_contains($path, '..')) {
+        abort(403);
+    }
+
+    if (!Storage::disk('public')->exists($path)) {
+        abort(404);
+    }
+
+    $mime = Storage::disk('public')->mimeType($path);
+    $stream = Storage::disk('public')->readStream($path);
+
+    return response()->stream(function () use ($stream) {
+        fpassthru($stream);
+    }, 200, [
+        'Content-Type'  => $mime,
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*')->name('storage.serve');
 
 // ─────────────────────────────────────────────
 // ROUTE PUBLIK (Pengunjung)
