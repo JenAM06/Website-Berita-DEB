@@ -55,7 +55,7 @@
         <article class="card overflow-hidden group flex flex-col">
           <a href="{{ route('posts.show', $post->slug) }}" class="block">
             @if($post->image)
-              <img src="{{ $post->image }}"
+              <img src="{{ $post->image_url }}"
                    alt="{{ $post->title }}"
                    class="w-full h-44 object-cover group-hover:scale-105 
                           transition-transform duration-300"/>

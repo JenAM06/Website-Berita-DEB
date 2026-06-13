@@ -86,7 +86,7 @@
             <td class="px-5 py-4">
               <div class="flex items-center gap-3">
                 @if($post->image)
-                  <img src="{{ $post->image }}"
+                  <img src="{{ $post->image_url }}"
                        alt="{{ $post->title }}"
                        class="w-12 h-12 rounded-xl object-cover shrink-0"/>
                 @else

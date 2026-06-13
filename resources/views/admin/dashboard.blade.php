@@ -55,7 +55,7 @@
         <div class="flex items-start gap-4 px-5 py-4 hover:bg-gray-50 
                     transition-colors">
           @if($post->image)
-            <img src="{{ $post->image }}"
+            <img src="{{ $post->image_url }}"
                  alt="{{ $post->title }}"
                  class="w-12 h-12 rounded-lg object-cover shrink-0"/>
           @else

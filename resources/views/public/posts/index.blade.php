@@ -67,7 +67,7 @@
              class="flex flex-col sm:flex-row gap-6 pb-8 mb-8 
                     border-b border-gray-200 group">
             @if($post->image)
-              <img src="{{ $post->image }}"
+              <img src="{{ $post->image_url }}"
                    alt="{{ $post->title }}"
                    class="w-full sm:w-64 h-44 object-cover shrink-0"/>
             @else
@@ -108,7 +108,7 @@
           <a href="{{ route('posts.show', $post->slug) }}"
              class="flex gap-4 py-5 border-b border-gray-100 group">
             @if($post->image)
-              <img src="{{ $post->image }}"
+              <img src="{{ $post->image_url }}"
                    alt="{{ $post->title }}"
                    class="w-24 h-18 object-cover shrink-0"/>
             @else

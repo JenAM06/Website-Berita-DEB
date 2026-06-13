@@ -154,7 +154,7 @@
         @if($post?->image)
         <div class="mb-3" id="current-image-wrapper">
           {{-- Gambar tersimpan sebagai base64 data URI di DB, langsung pakai sebagai src --}}
-          <img src="{{ $post->image }}"
+          <img src="{{ $post->image_url }}"
                alt="Gambar saat ini"
                class="w-full h-40 object-cover rounded-lg border border-gray-200"/>
           <p class="text-xs text-gray-400 mt-1">Gambar saat ini</p>

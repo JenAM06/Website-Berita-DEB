@@ -65,7 +65,7 @@
 
         {{-- Gambar --}}
         @if($post->image)
-        <img src="{{ $post->image }}"
+        <img src="{{ $post->image_url }}"
              alt="{{ $post->title }}"
              class="w-full max-h-96 object-cover mb-8"/>
         @endif
@@ -110,7 +110,7 @@
             <a href="{{ route('posts.show', $related->slug) }}"
                class="flex gap-3 py-4 border-b border-gray-100 group">
               @if($related->image)
-                <img src="{{ $related->image }}"
+                <img src="{{ $related->image_url }}"
                      alt="{{ $related->title }}"
                      class="w-16 h-14 object-cover shrink-0"/>
               @else
